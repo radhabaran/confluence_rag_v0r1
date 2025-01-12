@@ -14,6 +14,11 @@ class Config:
     # API Key for OpenAI
     OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
+    # Confluence settings
+    CONFLUENCE_USERNAME = 'radhabaran.mohanty@gmail.com'
+    CONFLUENCE_API_TOKEN = os.getenv('CONFLUENCE_KEY')  # Load from environment variable
+    CONFLUENCE_PAGE_ID = '98319'  # The ID of the page you want to access
+
     # Collection settings
     COLLECTION_NAME = "knowledge_base"
 

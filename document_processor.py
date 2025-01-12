@@ -31,6 +31,7 @@ class DocumentProcessor:
             separators=["\n\n", "\n", ".", " ", ""]
         )
 
+
     def _setup_collection(self):
         """Setup Qdrant collection if it doesn't exist"""
         collections = self.qdrant_client.get_collections()
@@ -43,6 +44,7 @@ class DocumentProcessor:
                 )
             )
 
+
     def _get_processed_files(self) -> set:
         """Get set of already processed files"""
         try:
@@ -53,11 +55,13 @@ class DocumentProcessor:
                 with_vectors=False
             )
             processed_files = {point.payload['filename'] for point in response[0]}
-            processed_files.add("Confluence_" + confluence_page_id)  # Example to track Confluence page
+            print(f"Processed files in Qdrant: {processed_files}")
+            processed_files.add(f"confluence_page_{self.config.CONFLUENCE_PAGE_ID}")  # Track Confluence page
             
             return processed_files
         except Exception:
             return set()
+
 
     def process_pdf(self, file_path: str) -> Generator[tuple, None, None]:
         """Process a single PDF file using PyMuPDF4LLM"""
@@ -73,6 +77,7 @@ class DocumentProcessor:
         except Exception as e:
             print(f"Error processing PDF {file_path}: {str(e)}")
             yield from []
+
 
     def process_confluence(self, page_id: str, username: str, api_token: str) -> Generator[tuple, None, None]:
         """Fetch and process content from a Confluence page"""
@@ -97,6 +102,7 @@ class DocumentProcessor:
         except Exception as e:
             print(f"Error processing Confluence page: {str(e)}")
             yield from []
+
 
     def process_pptx(self, file_path: str) -> Generator[tuple, None, None]:
         """Process a PPTX file"""
@@ -125,9 +131,11 @@ class DocumentProcessor:
             print(f"Error processing PPTX {file_path}: {str(e)}")
             yield from []
 
+
     def process_ppt(self, file_path: str) -> Generator[tuple, None, None]:
         """Process a legacy PPT file using python-pptx"""
         return self.process_pptx(file_path)  # Handle both .ppt and .pptx the same way
+
 
     def process_document(self, file_path: str) -> Generator[tuple, None, None]:
         """Process any supported document type"""
@@ -142,6 +150,7 @@ class DocumentProcessor:
         else:
             print(f"Unsupported file type: {file_extension}")
             yield from []
+
 
     def create_chunks(self, text: str, metadata: Dict) -> List[Dict]:
         """Create chunks from text with metadata"""
@@ -159,6 +168,7 @@ class DocumentProcessor:
             for i, chunk in enumerate(chunks)
         ]
 
+
     def get_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Get embeddings for texts using OpenAI"""
         try:
@@ -170,6 +180,7 @@ class DocumentProcessor:
         except Exception as e:
             print(f"Error generating embeddings: {str(e)}")
             raise
+
 
     def store_vectors(self, vectors: List[List[float]], chunks: List[Dict]):
         """Store vectors and metadata in Qdrant"""
@@ -196,6 +207,7 @@ class DocumentProcessor:
         except Exception as e:
             print(f"Error storing vectors: {str(e)}")
             raise
+
 
     def final_processing(self) -> int:
         """Main processing function"""
@@ -280,10 +292,10 @@ def main():
     try:
         print("Starting document processing...")
         
-        # Process Confluence content
-        confluence_username = 'radhabaran.mohanty@gmail.com'
-        confluence_api_token = os.getenv('CONFLUENCE_KEY')
-        confluence_page_id = '98319'  # The ID of the page you want to access
+        # Use configuration settings for Confluence
+        confluence_username = Config.CONFLUENCE_USERNAME
+        confluence_api_token = Config.CONFLUENCE_API_TOKEN
+        confluence_page_id = Config.CONFLUENCE_PAGE_ID
         confluence_processed = False
 
         for _, text, title in processor.process_confluence(confluence_page_id, confluence_username, confluence_api_token):

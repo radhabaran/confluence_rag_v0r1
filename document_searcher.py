@@ -73,6 +73,7 @@ class DocumentSearcher:
     def search(self, query: str, limit: int = None, score_threshold: float = None) -> List[Dict]:
         """Search for similar text chunks"""
         query_vector = self.get_embedding(query)
+        print("\n\nDebugging: Query Vector:", query_vector)  # Debug
     
         results = self.qdrant_client.search(
             collection_name=self.config.COLLECTION_NAME,
@@ -80,6 +81,7 @@ class DocumentSearcher:
             limit=(limit or self.config.SEARCH_LIMIT) * 2,
             score_threshold=score_threshold or self.config.SIMILARITY_THRESHOLD
         )
+        print("\n\nDebugging: Search Results:", results) 
 
         # Filter out invalid content and clean text
         filtered_results = []

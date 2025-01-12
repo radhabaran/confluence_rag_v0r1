@@ -10,9 +10,18 @@ load_dotenv()
 api_key = os.environ['OA_API']
 os.environ['OPENAI_API_KEY'] = api_key
 
+# Huggingface API configuration
+hf_api_key = os.environ['MY_HF_TOKEN1']
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = hf_api_key
+
 class Config:
     # API Key for OpenAI
     OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+
+    # API Key for Huggingface
+    HF_API_KEY = os.environ['HUGGINGFACEHUB_API_TOKEN']
+
+    # API Key for Huggingface
 
     # Confluence settings
     CONFLUENCE_USERNAME = 'radhabaran.mohanty@gmail.com'

@@ -263,9 +263,11 @@ def main():
         with st.spinner("🔍 Searching and generating response..."):
             try:
                 results = st.session_state.qa_system.search_similar_chunks(user_query)
+                print("\n\nDebugging: Search Results:", results)  # Debug
                 
                 if results:
                     response, context = st.session_state.qa_system.get_chat_response(user_query, results)
+                    print("\n\nDebugging: Chat Response: ", response)  # Debug
                     display_results(results, response)
                 else:
                     st.info("ℹ️ No relevant passages found. Try rephrasing your question.")

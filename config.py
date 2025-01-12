@@ -33,6 +33,10 @@ class Config:
     # Supported file extensions
     SUPPORTED_EXTENSIONS = ['.pdf', '.ppt', '.pptx']
 
+    # Search settings
+    SEARCH_LIMIT = 10
+    SIMILARITY_THRESHOLD = 0.7
+
     # Chunking configuration
     CHUNK_SIZE = 512  # Adjust as needed
     CHUNK_OVERLAP = 50  # Adjust as needed
